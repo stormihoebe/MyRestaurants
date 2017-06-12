@@ -11,6 +11,8 @@ import com.epicodus.myrestaurants.Constants;
 import com.epicodus.myrestaurants.R;
 import com.epicodus.myrestaurants.models.Restaurant;
 import com.epicodus.myrestaurants.ui.RestaurantDetailActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +34,7 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder imple
 
     View mView;
     Context mContext;
+    public ImageView mRestaurantImageView;
 
     public FirebaseRestaurantsViewHolder(View itemView){
         super(itemView);
@@ -40,6 +43,7 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder imple
         itemView.setOnClickListener(this);
     }
     public void bindRestaurant(Restaurant restaurant) {
+        mRestaurantImageView = (ImageView) mView.findViewById(R.id.restaurantImageView);
         ImageView restaurantImageView = (ImageView) mView.findViewById(R.id.restaurantImageView);
         TextView nameTextView = (TextView) mView.findViewById(R.id.restaurantNameTextView);
         TextView categoryTextView = (TextView) mView.findViewById(R.id.categoryTextView);
@@ -49,7 +53,7 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder imple
                 .load(restaurant.getImageUrl())
                 .resize(MAX_WIDTH, MAX_HEIGHT)
                 .centerCrop()
-                .into(restaurantImageView);
+                .into(mRestaurantImageView);
 
         nameTextView.setText(restaurant.getName());
         categoryTextView.setText(restaurant.getCategories().get(0));
@@ -58,7 +62,11 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder imple
     @Override
     public void onClick(View view) {
         final ArrayList<Restaurant> restaurants = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_RESTAURANTS);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_RESTAURANTS)
+                .child(uid);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
