@@ -40,7 +40,7 @@ public class RestaurantListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurants);
+        setContentView(R.layout.activity_saved_restaurant_list);
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
@@ -56,6 +56,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 //        Log.d("Shared Pref Location", mRecentAdress);
 
     }
+
 
     private void getRestaurants(String location) {
         final YelpService yelpService = new YelpService();

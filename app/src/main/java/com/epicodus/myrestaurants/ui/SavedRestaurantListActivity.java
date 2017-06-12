@@ -35,7 +35,7 @@ public class SavedRestaurantListActivity extends AppCompatActivity  implements O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_restaurants);
+        setContentView(R.layout.activity_saved_restaurant_list);
         ButterKnife.bind(this);
 
 
