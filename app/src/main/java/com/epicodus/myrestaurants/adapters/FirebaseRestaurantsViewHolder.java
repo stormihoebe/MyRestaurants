@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.epicodus.myrestaurants.Constants;
 import com.epicodus.myrestaurants.R;
 import com.epicodus.myrestaurants.models.Restaurant;
 import com.epicodus.myrestaurants.ui.RestaurantDetailActivity;
+import com.epicodus.myrestaurants.util.ItemTouchHelperViewHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
  * Created by Guest on 6/5/17.
  */
 
-public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder{
+public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
     private static final int MAX_WIDTH =  200;
     private static final int MAX_HEIGHT = 200;
 
@@ -64,6 +66,18 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder{
     }
 
 
+    @Override
+    public void onItemSelected() {
+        itemView.animate()
+                .alpha(0.7f)
+                .scaleX(0.9f)
+                .scaleY(0.9f)
+                .setDuration(300);    }
 
-
+    @Override
+    public void onItemClear() {
+        itemView.animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f);    }
 }
