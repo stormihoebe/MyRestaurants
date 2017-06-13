@@ -4,8 +4,12 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -56,15 +61,39 @@ public class FirebaseRestaurantsViewHolder extends RecyclerView.ViewHolder imple
         TextView categoryTextView = (TextView) mView.findViewById(R.id.categoryTextView);
         TextView ratingTextView = (TextView) mView.findViewById(R.id.ratingTextView);
 
-        Picasso.with(mContext)
-                .load(restaurant.getImageUrl())
-                .resize(MAX_WIDTH, MAX_HEIGHT)
-                .centerCrop()
-                .into(mRestaurantImageView);
+        if (!restaurant.getImageUrl().contains("http")) {
+            try {
+                Bitmap imageBitmap = decodeFromFirebase64(restaurant.getImageUrl());
+                mRestaurantImageView.setImageBitmap(imageBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
 
+            Picasso.with(mContext)
+                    .load(restaurant.getImageUrl())
+                    .resize(MAX_WIDTH, MAX_HEIGHT)
+                    .centerCrop()
+                    .into(mRestaurantImageView);
+
+//            nameTextView.setText(restaurant.getName());
+//            categoryTextView.setText(restaurant.getCategories().get(0));
+//            ratingTextView.setText("Rating: " + restaurant.getRating() + "/5");
+
+        }
+//
         nameTextView.setText(restaurant.getName());
-        categoryTextView.setText(restaurant.getCategories().get(0));
+        if (restaurant.getCategories().size() > 0 ) {
+            categoryTextView.setText(restaurant.getCategories().get(0));
+        } else {
+            categoryTextView.setText("");
+        }
         ratingTextView.setText("Rating: " + restaurant.getRating() + "/5");
+    }
+
+   public static Bitmap decodeFromFirebase64(String image) throws IOException{
+       byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
+       return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
     }
 
 
